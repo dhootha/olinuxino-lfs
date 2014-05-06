@@ -1,0 +1,12 @@
+--- drivers/misc/pwm-sunxi.c	2013-09-12 15:43:14.763167620 +0300
++++ drivers/misc/pwm-sunxi.c	2013-09-10 12:32:47.207297924 +0300
+@@ -48,7 +48,7 @@
+ #include <linux/pwm.h> 
+ #include <linux/ctype.h> 
+ #include <linux/limits.h> 
+-#include <pwm-sunxi.h>
++#include "pwm-sunxi.h"
+ #include <linux/pwm.h> 
+ #include <linux/kdev_t.h> 
+ #include <plat/system.h>
+

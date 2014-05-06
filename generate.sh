@@ -4,12 +4,12 @@ echo $PWD
 mkdir -v $LFS/sources
 chmod -v a+wt $LFS/sources
 rm  -rf $LFS/sources/*
-
+rm -rf $LFS/tools
 rm -rf $LFS/binutils-build/*
 wget -i http://www.linuxfromscratch.org/lfs/view/stable/wget-list -P  $LFS/sources
 wget -i http://www.linuxfromscratch.org/lfs/view/stable/md5sums  -P  $LFS/sources
 pushd $LFS/sources
-md5sum -c md5sums
+#md5sum -c md5sums
 popd
 mkdir -pv $LFS/tools
 ln -sv $LFS/tools /
@@ -23,6 +23,7 @@ LFS_TGT=$(uname -m)-lfs-linux-gnu
 PATH=$LFS/tools/bin:$LFS/bin:$LFS/usr/bin:$PATH
 export LFS LC_ALL LFS_TGT PATH
 cd $LFS/sources
+
 tar jxvf binutils-2.24.tar.bz2
 rm -rf ../binutils-build
 mkdir -vp ../binutils-build
@@ -32,7 +33,6 @@ cd ../binutils-build
 ../sources/binutils-2.24/configure --prefix=$LFS/tools --with-sysroot=$LFS --with-lib-path=$LFS/tools/lib --target=$LFS_TGT --disable-nls --disable-werror
 make -j2
 make install
-
 
 
 cd $LFS/sources
@@ -59,7 +59,7 @@ do
   touch $file.orig
 done
 
-
+sed -i '/k prot/agcc_cv_libc_provides_ssp=yes' gcc/configure
 mkdir -v ../gcc-build
 cd ../gcc-build
 
@@ -92,3 +92,36 @@ cd ../gcc-build
 make
 make install
 ln -sv libgcc.a `$LFS_TGT-gcc -print-libgcc-file-name | sed 's/libgcc/&_eh/'`
+
+cd $LFS/sources
+tar xvf linux-3.13.3.tar.xz
+cd linux-3.13.3
+make mrproper
+make headers_check
+make INSTALL_HDR_PATH=dest headers_install
+cp -rv dest/include/* $LFS/tools/include
+
+cd $LFS/sources
+tar Jxvf glibc-2.19.tar.xz
+cd glibc-2.19
+mkdir -v ../glibc-build
+
+cd ../glibc-build
+../glibc-2.19/configure                             \
+--with-lib-path=$LFS/tools/lib \
+      --prefix=$LFS/tools                               \
+      --host=$LFS_TGT                               \
+      --build=$(../glibc-2.19/scripts/config.guess) \
+      --disable-profile                             \
+      --enable-kernel=2.6.32                        \
+      --with-headers=$LFS/tools/include                 \
+      libc_cv_forced_unwind=yes                     \
+      libc_cv_ctors_header=yes                      \
+      libc_cv_c_cleanup=yes
+make 
+#make install
+
+#test
+echo 'main(){}' > dummy.c
+$LFS_TGT-gcc dummy.c
+readelf -l a.out | grep ': /tools'

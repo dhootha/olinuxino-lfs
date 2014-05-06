@@ -3,28 +3,34 @@ GREEN="\\033[1;32m"
 YELLOW="\\033[1;33m"
 RED="\\033[1;31m" 
 NORMAL="\\033[0;39m"
-#rm -rf u-boot-sunxi
+rm -rf u-boot-sunxi
+rm -rf linux-sunxi
+
 echo -e "$RED ensure that you did:\n sudo apt get update"
 echo -e "$RED sudo apt-get install gcc-4.6-arm-linux-gnueabihf ncurses-dev uboot-mkimage build-essential"
 echo -e "$YELLOW"
-#git rev-parse --verify HEAD 3d2fc4e8ff764209a8249c3b52dc937f3a106a7f
-#git clone -b sunxi https://github.com/linux-sunxi/u-boot-sunxi.git
+echo "first sudo to initialize password"
+sudo ls
+
+git rev-parse --verify HEAD 3d2fc4e8ff764209a8249c3b52dc937f3a106a7f
+git clone -b sunxi https://github.com/linux-sunxi/u-boot-sunxi.git
+
 cd u-boot-sunxi/
-#make A20-OLinuXino_MICRO_config
-#make  CROSS_COMPILE=arm-linux-gnueabihf-
+make A20-OLinuXino_MICRO_config
+make  CROSS_COMPILE=arm-linux-gnueabihf-
 
 cd ..
-#git clone https://github.com/linux-sunxi/linux-sunxi -b stage/sunxi-3.4
+git clone https://github.com/linux-sunxi/linux-sunxi -b stage/sunxi-3.4
 cd linux-sunxi/
 
 cp ../olinuxinoa20_defconfig arch/arm/configs/.config
 cp ../olinuxinoa20_defconfig arch/arm/configs/
-#make ARCH=arm olinuxinoa20_defconfig
+make ARCH=arm olinuxinoa20_defconfig
 
-#patch -p0 < ../sunxi-pwm.patch
-#patch -p0 < ../sunxi-i2c.patch
-#make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j4 uImage
-#make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j4 INSTALL_MOD_PATH=out modules
+patch -p0 < ../sunxi-pwm.patch
+patch -p0 < ../sunxi-i2c.patch
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j4 uImage
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j4 INSTALL_MOD_PATH=out modules
 
 echo -e "$REDassuming that our SD card is in /dev/mmcblk"
 echo -e "and 2 partitons are available" 

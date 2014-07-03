@@ -6,13 +6,13 @@ NORMAL="\\033[0;39m"
 rm -rf u-boot-sunxi
 rm -rf linux-sunxi
 
-echo -e "$RED ensure that you did:\n sudo apt get update"
+echo -e "$RED ensure that you did:\n sudo apt-get update"
 echo -e "$RED sudo apt-get install gcc-4.6-arm-linux-gnueabihf ncurses-dev uboot-mkimage build-essential"
 echo -e "$YELLOW"
 echo "first sudo to initialize password"
 sudo ls
 
-git rev-parse --verify HEAD 3d2fc4e8ff764209a8249c3b52dc937f3a106a7f
+#git rev-parse --verify HEAD 3d2fc4e8ff764209a8249c3b52dc937f3a106a7f
 git clone -b sunxi https://github.com/linux-sunxi/u-boot-sunxi.git
 
 cd u-boot-sunxi/
@@ -27,7 +27,7 @@ cp ../olinuxinoa20_defconfig arch/arm/configs/.config
 cp ../olinuxinoa20_defconfig arch/arm/configs/
 make ARCH=arm olinuxinoa20_defconfig
 
-patch -p0 < ../sunxi-pwm.patch
+#patch -p0 < ../sunxi-pwm.patch
 patch -p0 < ../sunxi-i2c.patch
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j4 uImage
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- -j4 INSTALL_MOD_PATH=out modules
@@ -51,7 +51,7 @@ read -p "Press [Enter] key to continue..."
 #sudo mkfs.vfat /dev/mmcblk0p1
 #sudo mkfs.ext3 /dev/mmcblk0p2
 
-cd u-boot-sunxi/
+cd ../u-boot-sunxi/
 export card=/dev/mmcblk0
 sudo dd if=/dev/zero of=${card} bs=1M count=1
 sudo dd if=u-boot-sunxi-with-spl.bin of=${card} bs=1024 seek=8

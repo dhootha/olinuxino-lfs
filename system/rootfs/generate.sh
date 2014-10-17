@@ -8,7 +8,7 @@ sudo apt-get install qemu-user-static debootstrap binfmt-support
 targetdir=rootfs
 distro=wheezy
 mkdir -p $targetdir
-#sudo debootstrap --arch=armhf --foreign $distro $targetdir
+sudo debootstrap --arch=armhf --foreign $distro $targetdir
 sudo cp /usr/bin/qemu-arm-static $targetdir/usr/bin/
 sudo cp /etc/resolv.conf $targetdir/etc
 sudo cp second_stage.sh $targetdir

@@ -16,8 +16,9 @@ sudo ls
 git clone -b sunxi https://github.com/linux-sunxi/u-boot-sunxi.git
 
 cd u-boot-sunxi/
-make A20-OLinuXino_MICRO_config
-make  CROSS_COMPILE=arm-linux-gnueabihf-
+
+make A20-OLinuXino-Micro_config
+make CROSS_COMPILE=arm-linux-gnueabihf-
 
 cd ..
 git clone https://github.com/linux-sunxi/linux-sunxi -b stage/sunxi-3.4

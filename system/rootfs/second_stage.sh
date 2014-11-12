@@ -18,10 +18,12 @@ deb-src http://security.debian.org/debian-security $distro/updates main contrib 
 EOT
 apt-get update 
 #sudo apt-get install --reinstall libc6=2.15-0ubuntu10.2 libc6-dev=2.15-0ubuntu10.2
-apt-get install libc6-dev libgssapi-krb5-2 libkrb5-3 libwrap0 openssh-client  locales dialog -y
+apt-get install openssh-client  locales dialog -y
 #dpkg-reconfigure locales
 apt-get upgrade -y
-dpkg --force- libump_3.0-0sunxi1_armhf.deb
+
+apt-get install -f git -y
+#apt-get install -f xutils-dev
 apt-get install -f openssh-server ntpdate -y 
 echo <<EOT >> /etc/network/interfaces 
 allow-hotplug eth0
@@ -30,4 +32,11 @@ iface eth0 inet static
 	netmask 255.255.255.248
 	gateway 192.168.1.1	
 EOT
+
+
+git clone https://github.com/linux-sunxi/sunxi-mali.git
+cd sunxi-mali
+git submodule init
+git submodule update
+make config
 exit
